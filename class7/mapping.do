@@ -100,11 +100,12 @@ graph set eps fontface "Times New Roman"
 
 #delimit ;
 spmap ny_gdp_pcap_cd using world_coords.dta, id(_ID)
-  point(data(protests.dta) xcoord(longitude) ycoord(latitude) fcolor(red) size(*0.5))
-osize(vvthin) fcolor(Pastel1) clnumber(5)
+  point(data(protests.dta) xcoord(longitude) ycoord(latitude) fcolor(red) size(*0.3))
+osize(vvthin) fcolor(Pastel2) clnumber(5)
 legend(title("GDP per capita", size(*1.25) bexpand justification(left)))
-legend(symy(*1.25) symx(*1.25) size(*1.5)) legstyle(2)
-title("GDP per Capita and Protests (Jan 2020)");
+legend(symy(*1.25) symx(*1.25) size(*1.9)) legstyle(2)
+title("GDP per Capita and Protests (Jan 2020)")
+note("Source: World Bank (GDP data) and The Armed Conflict Location & Event Data Project.");
 graph export "$OUT/GDPwProtestsClean.eps", replace;
 #delimit cr
 
