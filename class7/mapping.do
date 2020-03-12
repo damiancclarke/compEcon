@@ -6,6 +6,12 @@ along with each country's GDP per capita from the World Bank data bank.  This
 file relies on a number of user-written ados which cap be installed from the SSC
 as in section 1.  
 
+Note that in certain cases, there have been issues with the data downloaded using
+wbopendata.  If this is the case, line 43 which states:
+ local wbflag   0
+sould be changed to:
+ local wbflag   1
+
 This file also relies on data download from a number of external sources (disc-
 ussed in class).  These are:
 
@@ -24,14 +30,18 @@ cap log close
 *-------------------------------------------------------------------------------
 *-- (1) Globals, check for user-written ados and install if not available
 *-------------------------------------------------------------------------------
-global DAT "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7"
-global OUT "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7"
-global LOG "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7"
+global DAT "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7/test"
+global OUT "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7/test"
+global LOG "/mnt/SDD-2/trabajo/Teaching/Exeter/computationalEcon/compEcon/class7/test"
 
 log using "$LOG/mapping.txt", text replace
 
+**This is the start of my log file
+
 local protests 2020-01-01-2020-01-31.csv
-local worldmap TM_WORLD_BORDERS_SIMPL-0.shp     
+local worldmap TM_WORLD_BORDERS_SIMPL-0.shp
+local wbflag   0
+
 
 foreach ado in spmap shp2dta wbopendata {
     cap which `ado'
@@ -51,9 +61,12 @@ saveold "$DAT/protests.dta", replace version(12)
 *-------------------------------------------------------------------------------
 *-- (3) Download and process GDP data
 *-------------------------------------------------------------------------------
-wbopendata, indicator(NY.GDP.PCAP.CD) long clear
-keep if year==2018
-drop if iso2code==""
+if `wbflag'==0 {
+    wbopendata, indicator(NY.GDP.PCAP.CD) long clear
+    keep if year==2018
+    drop if iso2code==""
+}
+else use http://www.damianclarke.net/stata/wbGDPpc2018
 saveold "$DAT/wbGDPpc2018", version(12) replace
 
 
